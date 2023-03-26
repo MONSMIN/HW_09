@@ -1,6 +1,7 @@
 
 contacts = {'Dima': [+30000001],'Patron': [+38888888888]}
 
+
 def input_error(func):
     
     def inner(*args):
@@ -8,9 +9,9 @@ def input_error(func):
             return func(*args)
         except IndexError:
             return "Not enough params. Print help"
+        except KeyError:
+            return 'Contact  not found, try again or use help'
     return inner
-
-
 
 
 @input_error
@@ -24,6 +25,7 @@ def add(*args):
     
     return f'{name}, phone number {phone_number}'
 
+
 def show_all(*args):
     return '\n'.join(f'{k}: {str(v[0])}' for k, v in contacts.items())
 
@@ -32,32 +34,36 @@ def show_all(*args):
 def phone(*args):
     list_of_param = args[0].split()
     name = list_of_param[0]
-    for k, v in contacts.items():
-        if k == name:
-            return f'phone number: {str(v[0])}'
+    phone = contacts.get(name)
+    if contacts[name]:
+        return f'phone number: {phone[0]}'
+
 
 @input_error
 def change(*args):
     list_of_param = args[0].split()
     name = list_of_param[0]
     phone_number = list_of_param[1:]
-    for k , v in contacts.items():
-        if name == k:
-            contacts[k] = phone_number
+    if contacts[name]:
+        contacts[name] = phone_number
+        return f'Contact {contacts[name]} update {str(phone_number[0])}'
 
-            return f'Contact {k} update {str(phone_number[0])}'
 
 def exit(*args):
     return "Good bye!"
 
+
 def no_command(*args):
     return 'Unknown command, try again or help'
+
 
 def help(*args):
     return "If there are problems, read the file, readme!"
 
+
 def hello(*args):
     return "How can I help you?"
+
 
 COMMANDS = {help: 'help',
             hello: 'hello',
@@ -87,8 +93,6 @@ def main():
         if user_input == 'exit':
             break 
             
-
-
 
 if __name__ == '__main__':
     main()
